@@ -19,10 +19,19 @@ protected:
 	virtual void BeginPlay() override;
 
 private:
-	UPROPERTY(VisibleAnywhere)
+
+	// Main procedural terrain mesh
+	UPROPERTY(VisibleAnywhere, Category = "Terrain")
 	UProceduralMeshComponent* TerrainMesh;
 
+	// Procedural pathway mesh
+	UPROPERTY(VisibleAnywhere, Category = "Paths")
+	UProceduralMeshComponent* PathMesh;
+
+	// -------------------------
 	// Terrain settings
+	// -------------------------
+
 	UPROPERTY(EditAnywhere, Category = "Terrain")
 	int32 GridSize = 30;
 
@@ -35,6 +44,30 @@ private:
 	UPROPERTY(EditAnywhere, Category = "Terrain")
 	float NoiseScale = 0.08f;
 
-	// Generates the terrain mesh
+	// -------------------------
+	// Path settings
+	// -------------------------
+
+	UPROPERTY(EditAnywhere, Category = "Paths")
+	float PathWidth = 250.0f;
+
+	UPROPERTY(EditAnywhere, Category = "Paths")
+	float PathHeightOffset = 25.0f;
+
+	// Generates the procedural terrain
 	void GenerateTerrain();
+
+	// Generates the three procedural pathways
+	void GeneratePaths();
+
+	// Adds a rectangular path section between two points
+	void AddPathSection(
+		TArray<FVector>& Vertices,
+		TArray<int32>& Triangles,
+		const FVector& Start,
+		const FVector& End
+	);
+
+	// Gets the terrain height at a world-space position
+	float GetTerrainHeight(float WorldX, float WorldY) const;
 };
