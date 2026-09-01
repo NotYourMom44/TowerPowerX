@@ -21,6 +21,7 @@ void AProceduralMapGenerator::BeginPlay()
 
 	GenerateTerrain();
 	GeneratePaths();
+	SpawnTower();
 }
 
 void AProceduralMapGenerator::GenerateTerrain()
@@ -194,21 +195,70 @@ void AProceduralMapGenerator::AddPathSection(
 	const FVector WidthOffset =
 		Perpendicular * (PathWidth / 2.0f);
 
-	const int32 StartIndex =
-		Vertices.Num();
+	// Number of sections used to make the path follow the terrain.
+	const int32 NumSections = 20;
 
-	Vertices.Add(Start + WidthOffset);
-	Vertices.Add(Start - WidthOffset);
-	Vertices.Add(End - WidthOffset);
-	Vertices.Add(End + WidthOffset);
+	// Remember where this path's vertices start in the shared array.
+	const int32 VertexStart = Vertices.Num();
 
-	Triangles.Add(StartIndex);
-	Triangles.Add(StartIndex + 2);
-	Triangles.Add(StartIndex + 1);
+	for (int32 Section = 0; Section <= NumSections; Section++)
+	{
+		const float Alpha =
+			static_cast<float>(Section) / NumSections;
 
-	Triangles.Add(StartIndex);
-	Triangles.Add(StartIndex + 3);
-	Triangles.Add(StartIndex + 2);
+		const FVector Centre =
+			FMath::Lerp(Start, End, Alpha);
+
+		// Get the actual procedural terrain height at this position.
+		const float TerrainHeight =
+			GetTerrainHeight(Centre.X, Centre.Y);
+
+		const float PathZ =
+			TerrainHeight + PathHeightOffset;
+
+		const FVector LeftPoint =
+			FVector(
+				Centre.X + WidthOffset.X,
+				Centre.Y + WidthOffset.Y,
+				PathZ
+			);
+
+		const FVector RightPoint =
+			FVector(
+				Centre.X - WidthOffset.X,
+				Centre.Y - WidthOffset.Y,
+				PathZ
+			);
+
+		Vertices.Add(LeftPoint);
+		Vertices.Add(RightPoint);
+	}
+
+	// Connect each pair of path points with two triangles.
+	for (int32 Section = 0; Section < NumSections; Section++)
+	{
+		const int32 CurrentLeft =
+			VertexStart + Section * 2;
+
+		const int32 CurrentRight =
+			CurrentLeft + 1;
+
+		const int32 NextLeft =
+			CurrentLeft + 2;
+
+		const int32 NextRight =
+			CurrentLeft + 3;
+
+		// First triangle
+		Triangles.Add(CurrentLeft);
+		Triangles.Add(NextLeft);
+		Triangles.Add(CurrentRight);
+
+		// Second triangle
+		Triangles.Add(CurrentRight);
+		Triangles.Add(NextLeft);
+		Triangles.Add(NextRight);
+	}
 }
 
 float AProceduralMapGenerator::GetTerrainHeight(
@@ -233,4 +283,30 @@ float AProceduralMapGenerator::GetTerrainHeight(
 	return FMath::PerlinNoise2D(
 		FVector2D(NoiseX, NoiseY)
 	) * HeightScale;
+}
+
+void AProceduralMapGenerator::SpawnTower()
+{
+	if (!TowerClass)
+	{
+		return;
+	}
+
+	const float TowerX = 0.0f;
+	const float TowerY = 0.0f;
+
+	const float TerrainHeight =
+		GetTerrainHeight(TowerX, TowerY);
+
+	const FVector TowerLocation(
+		TowerX,
+		TowerY,
+		TerrainHeight
+	);
+
+	GetWorld()->SpawnActor<AActor>(
+		TowerClass,
+		TowerLocation,
+		FRotator::ZeroRotator
+	);
 }

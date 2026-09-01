@@ -54,11 +54,21 @@ private:
 	UPROPERTY(EditAnywhere, Category = "Paths")
 	float PathHeightOffset = 25.0f;
 
+	// -------------------------
+	// Tower settings
+	// -------------------------
+
+	UPROPERTY(EditAnywhere, Category = "Tower")
+	TSubclassOf<AActor> TowerClass;
+
 	// Generates the procedural terrain
 	void GenerateTerrain();
 
 	// Generates the three procedural pathways
 	void GeneratePaths();
+
+	// Spawns the central tower
+	void SpawnTower();
 
 	// Adds a rectangular path section between two points
 	void AddPathSection(
