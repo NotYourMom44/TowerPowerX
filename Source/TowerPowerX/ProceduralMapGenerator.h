@@ -44,6 +44,9 @@ private:
 	UPROPERTY(EditAnywhere, Category = "Terrain")
 	float NoiseScale = 0.08f;
 
+	float NoiseOffsetX;
+	float NoiseOffsetY;
+
 	// -------------------------
 	// Path settings
 	// -------------------------

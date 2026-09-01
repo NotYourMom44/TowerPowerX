@@ -19,6 +19,10 @@ void AProceduralMapGenerator::BeginPlay()
 {
 	Super::BeginPlay();
 
+	// Generate a new random noise offset each time the game starts.
+	NoiseOffsetX = FMath::FRandRange(0.0f, 10000.0f);
+	NoiseOffsetY = FMath::FRandRange(0.0f, 10000.0f);
+
 	GenerateTerrain();
 	GeneratePaths();
 	SpawnTower();
@@ -46,8 +50,8 @@ void AProceduralMapGenerator::GenerateTerrain()
 	{
 		for (int32 X = 0; X <= GridSize; X++)
 		{
-			const float NoiseX = X * NoiseScale;
-			const float NoiseY = Y * NoiseScale;
+			const float NoiseX = X * NoiseScale + NoiseOffsetX;
+			const float NoiseY = Y * NoiseScale + NoiseOffsetY;
 
 			const float Height =
 				FMath::PerlinNoise2D(
@@ -275,10 +279,12 @@ float AProceduralMapGenerator::GetTerrainHeight(
 		+ GridSize / 2.0f;
 
 	const float NoiseX =
-		TerrainOriginX * NoiseScale;
+		TerrainOriginX * NoiseScale
+		+ NoiseOffsetX;
 
 	const float NoiseY =
-		TerrainOriginY * NoiseScale;
+		TerrainOriginY * NoiseScale
+		+ NoiseOffsetY;
 
 	return FMath::PerlinNoise2D(
 		FVector2D(NoiseX, NoiseY)
