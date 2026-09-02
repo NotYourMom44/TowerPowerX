@@ -316,3 +316,35 @@ void AProceduralMapGenerator::SpawnTower()
 		FRotator::ZeroRotator
 	);
 }
+
+FVector AProceduralMapGenerator::GetPathSpawnPoint(int32 PathIndex) const
+{
+	const float HalfSize = (GridSize * CellSize) / 2.0f;
+
+	switch (PathIndex)
+	{
+	case 0:
+		return FVector(
+			0.0f,
+			HalfSize,
+			GetTerrainHeight(0.0f, HalfSize) + PathHeightOffset
+		);
+
+	case 1:
+		return FVector(
+			-HalfSize,
+			0.0f,
+			GetTerrainHeight(-HalfSize, 0.0f) + PathHeightOffset
+		);
+
+	case 2:
+		return FVector(
+			0.0f,
+			-HalfSize,
+			GetTerrainHeight(0.0f, -HalfSize) + PathHeightOffset
+		);
+
+	default:
+		return FVector::ZeroVector;
+	}
+}

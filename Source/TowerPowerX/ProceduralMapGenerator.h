@@ -15,6 +15,12 @@ class TOWERPOWERX_API AProceduralMapGenerator : public AActor
 public:
 	AProceduralMapGenerator();
 
+	UFUNCTION(BlueprintCallable, Category = "Paths")
+	FVector GetPathSpawnPoint(int32 PathIndex) const;
+
+	UFUNCTION(BlueprintCallable, Category = "Terrain")
+	float GetTerrainHeight(float WorldX, float WorldY) const;
+
 protected:
 	virtual void BeginPlay() override;
 
@@ -80,7 +86,4 @@ private:
 		const FVector& Start,
 		const FVector& End
 	);
-
-	// Gets the terrain height at a world-space position
-	float GetTerrainHeight(float WorldX, float WorldY) const;
 };
