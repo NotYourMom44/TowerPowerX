@@ -34,9 +34,7 @@ private:
 	UPROPERTY(VisibleAnywhere, Category = "Paths")
 	UProceduralMeshComponent* PathMesh;
 
-	// -------------------------
 	// Terrain settings
-	// -------------------------
 
 	UPROPERTY(EditAnywhere, Category = "Terrain")
 	int32 GridSize = 30;
@@ -53,9 +51,7 @@ private:
 	float NoiseOffsetX;
 	float NoiseOffsetY;
 
-	// -------------------------
 	// Path settings
-	// -------------------------
 
 	UPROPERTY(EditAnywhere, Category = "Paths")
 	float PathWidth = 250.0f;
@@ -63,9 +59,7 @@ private:
 	UPROPERTY(EditAnywhere, Category = "Paths")
 	float PathHeightOffset = 25.0f;
 
-	// -------------------------
 	// Tower settings
-	// -------------------------
 
 	UPROPERTY(EditAnywhere, Category = "Tower")
 	TSubclassOf<AActor> TowerClass;

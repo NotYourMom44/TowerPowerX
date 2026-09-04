@@ -42,9 +42,7 @@ void AProceduralMapGenerator::GenerateTerrain()
 	Vertices.Reserve(VertexCount * VertexCount);
 	UV0.Reserve(VertexCount * VertexCount);
 
-	// -------------------------
 	// Generate terrain vertices
-	// -------------------------
 
 	for (int32 Y = 0; Y <= GridSize; Y++)
 	{
@@ -81,9 +79,7 @@ void AProceduralMapGenerator::GenerateTerrain()
 		}
 	}
 
-	// -------------------------
 	// Generate terrain triangles
-	// -------------------------
 
 	for (int32 Y = 0; Y < GridSize; Y++)
 	{
@@ -132,12 +128,11 @@ void AProceduralMapGenerator::GeneratePaths()
 
 	const float HalfSize = (GridSize * CellSize) / 2.0f;
 
-	// Put the paths well above the terrain for this test.
 	const float PathZ = 300.0f;
 
 	const FVector CentrePoint(0.0f, 0.0f, PathZ);
 
-	// Path 1: Top → Centre
+	// Path 1
 	AddPathSection(
 		Vertices,
 		Triangles,
@@ -145,7 +140,7 @@ void AProceduralMapGenerator::GeneratePaths()
 		CentrePoint
 	);
 
-	// Path 2: Left → Centre
+	// Path 2
 	AddPathSection(
 		Vertices,
 		Triangles,
@@ -153,7 +148,7 @@ void AProceduralMapGenerator::GeneratePaths()
 		CentrePoint
 	);
 
-	// Path 3: Bottom → Centre
+	// Path 3
 	AddPathSection(
 		Vertices,
 		Triangles,
@@ -199,10 +194,8 @@ void AProceduralMapGenerator::AddPathSection(
 	const FVector WidthOffset =
 		Perpendicular * (PathWidth / 2.0f);
 
-	// Number of sections used to make the path follow the terrain.
 	const int32 NumSections = 20;
 
-	// Remember where this path's vertices start in the shared array.
 	const int32 VertexStart = Vertices.Num();
 
 	for (int32 Section = 0; Section <= NumSections; Section++)
@@ -213,7 +206,6 @@ void AProceduralMapGenerator::AddPathSection(
 		const FVector Centre =
 			FMath::Lerp(Start, End, Alpha);
 
-		// Get the actual procedural terrain height at this position.
 		const float TerrainHeight =
 			GetTerrainHeight(Centre.X, Centre.Y);
 
@@ -238,7 +230,6 @@ void AProceduralMapGenerator::AddPathSection(
 		Vertices.Add(RightPoint);
 	}
 
-	// Connect each pair of path points with two triangles.
 	for (int32 Section = 0; Section < NumSections; Section++)
 	{
 		const int32 CurrentLeft =
